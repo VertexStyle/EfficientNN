@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import hashlib
 import librosa
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from multiprocessing import Pool
 
 import torch
 import torchaudio
@@ -203,7 +203,7 @@ class GoogleSpeechCommandsDataset(Dataset):
         items = [i for i in range(len(self))]
         do_pre_cache = False
 
-        # Check if any file needs caching
+        # Check if there is a need for precaching
         for i in items:
             try:
                 _, cache_path, _, _ = self.file_paths[i]
@@ -214,28 +214,15 @@ class GoogleSpeechCommandsDataset(Dataset):
                 do_pre_cache = True
                 break
 
-        def cache_item(i):
-            try:
-                self.__getitem__(i)
-                return f"Item {i} cached"
-            except Exception as e:
-                return f"Error caching item {i}: {e}"
-
         if do_pre_cache:
-            total_items = len(items)
-            if self.logging:
-                print('Caching the dataset...')
-                with ProcessPoolExecutor() as executor:
-                    # Submit all tasks to the executor
-                    futures = {executor.submit(cache_item, i): i for i in items}
-                    completed = 0
-                    for future in as_completed(futures):
-                        result = future.result()
-                        completed += 1
-                        percentage = (completed / total_items) * 100
-                        print(f"{result} - Completed: {percentage:.2f}%")
-            else:
-                with ProcessPoolExecutor() as executor:
+            def cache_item(i):
+                self.__getitem__(i)
+
+            with Pool(os.cpu_count()) as executor:
+                if self.logging:
+                    print('Caching the dataset...')
+                    list(tqdm(executor.imap(cache_item, items), total=len(items)))
+                else:
                     executor.map(cache_item, items)
 
     def play(self, idx, blocking=True):
