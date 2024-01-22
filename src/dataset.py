@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import hashlib
 import librosa
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 import torch
 import torchaudio
@@ -224,7 +224,10 @@ class GoogleSpeechCommandsDataset(Dataset):
             if self.logging:
                 print('Caching the dataset...')
                 with ProcessPoolExecutor() as executor:
-                    list(tqdm(executor.map(cache_item, items), total=len(items)))
+                    futures = {executor.submit(cache_item, i): i for i in items}
+                    with tqdm(total=len(items)) as progress:
+                        for future in as_completed(futures):
+                            progress.update(1)
             else:
                 with ProcessPoolExecutor() as executor:
                     executor.map(cache_item, items)
