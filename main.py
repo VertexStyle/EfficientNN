@@ -33,7 +33,7 @@ if __name__ == '__main__':
         runs = [cfg for cfg, act in configs.items() if act]
     else:
         runs = args.configs
-    print('Run configurations:', runs)
+    print('Run configurations:', ', '.join(runs))
     print()
 
     for config_name in runs:

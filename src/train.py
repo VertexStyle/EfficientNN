@@ -266,9 +266,23 @@ def load_config(configuration, run_name_index=None):
     model_num_blocks_per_stage = configuration['model']['num_blocks_per_stage']
     model_padding = configuration['model']['padding']
     target_device = configuration['device']['target']
+
     data_train_dir = configuration['data']['train_dir']
     data_test_dir = configuration['data']['test_dir']
     data_cache_dir = configuration['data']['cache_dir']
+    if not os.path.exists(data_train_dir):
+        ab = data_train_dir.split('*/')
+        if len(ab) == 2:
+            data_train_dir = os.path.join('./', ab[1])
+    if not os.path.exists(data_test_dir):
+        ab = data_test_dir.split('*/')
+        if len(ab) == 2:
+            data_test_dir = os.path.join('./', ab[1])
+    if not os.path.exists(data_cache_dir):
+        ab = data_cache_dir.split('*/')
+        if len(ab) == 2:
+            data_cache_dir = os.path.join('./', ab[1])
+
     data_encoding = configuration['data']['encoding']
     data_augment = configuration['data']['augment']
     data_sample_limit = configuration['data']['sample_limit']
