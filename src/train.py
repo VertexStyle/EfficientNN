@@ -282,6 +282,9 @@ def load_config(configuration, run_name_index=None):
         ab = data_cache_dir.split('*/')
         if len(ab) == 2:
             data_cache_dir = os.path.join('./', ab[1])
+    data_train_dir.replace('*', '')
+    data_test_dir.replace('*', '')
+    data_cache_dir.replace('*', '')
 
     data_encoding = configuration['data']['encoding']
     data_augment = configuration['data']['augment']
