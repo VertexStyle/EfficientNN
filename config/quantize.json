@@ -1,0 +1,70 @@
+{
+   "model": {
+      "type":  "ResNet",
+      "initial_channels": 64,
+      "stage_channels": [64, 128, 256, 512],
+      "stage_stride": [1, 2, 2, 2],
+      "num_blocks_per_stage": 2,
+      "padding": 1
+   },
+   "device": {
+      "target": "cuda"
+   },
+   "data": {
+      "train_dir": "/home/marcel/Source/Python/DLOptimization/data/speech_commands_v0.02",
+      "test_dir": "/home/marcel/Source/Python/DLOptimization/data/speech_commands_test_set_v0.02",
+      "cache_dir": "/home/marcel/Source/Python/DLOptimization/cache/data/",
+      "encoding": "mel",
+      "augment": 0,
+      "sample_limit": null
+   },
+   "checkpoint": {
+      "use_checkpoint": false,
+      "checkpoint_path": "/home/marcel/Source/Python/EfficientNN/models/resnet_ep55_acc99_sprs0.pth"
+   },
+   "training": {
+      "epochs": 60,
+      "learning_rate": 0.0001,
+      "weight_decay": 0.0001,
+      "batch_size": 64,
+      "optimizer": "Adam"
+   },
+   "pruning": {
+      "prune": false,
+      "prune_amount": 0.5,
+      "prune_interval": 10
+   },
+   "quantization": {
+      "quantize": true,
+      "quantization_aware": true
+   },
+   "distillation": {
+      "distill": false,
+      "teacher_path": "/home/marcel/Source/Python/EfficientNN/models/resnet_ep55_acc99_sprs0.pth",
+      "t": 2,
+      "soft_target_loss_weight": 0.25,
+      "ce_loss_weight": 0.75
+   },
+   "spiking": {
+      "spike": false,
+      "beta": 0.5,
+      "surrogate_alpha": 2.0,
+      "threshold": 1.0,
+      "steps": 5,
+      "threshold": 0.75
+   },
+   "neglecting": {
+      "neglect": false,
+      "amount": 0.5,
+   },
+   "logging": {
+      "project":  "Efficient",
+      "name":  "Quantize",
+      "group":  "Quantize",
+      "comment": "Quantization aware training",
+      "log_interval": 10,
+      "checkpoints": true,
+      "checkpoint_interval": 10,
+      "run_dir": "./runs/resnet_2024-01-18_05-09"
+   }
+}
