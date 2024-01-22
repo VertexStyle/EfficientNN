@@ -217,17 +217,23 @@ class GoogleSpeechCommandsDataset(Dataset):
         def cache_item(i):
             try:
                 self.__getitem__(i)
+                return f"Item {i} cached"
             except Exception as e:
-                print(f"Error caching item {i}: {e}")
+                return f"Error caching item {i}: {e}"
 
         if do_pre_cache:
+            total_items = len(items)
             if self.logging:
                 print('Caching the dataset...')
                 with ProcessPoolExecutor() as executor:
+                    # Submit all tasks to the executor
                     futures = {executor.submit(cache_item, i): i for i in items}
-                    with tqdm(total=len(items)) as progress:
-                        for future in as_completed(futures):
-                            progress.update(1)
+                    completed = 0
+                    for future in as_completed(futures):
+                        result = future.result()
+                        completed += 1
+                        percentage = (completed / total_items) * 100
+                        print(f"{result} - Completed: {percentage:.2f}%")
             else:
                 with ProcessPoolExecutor() as executor:
                     executor.map(cache_item, items)
