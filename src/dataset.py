@@ -177,7 +177,7 @@ class GoogleSpeechCommandsDataset(Dataset):
         label_tensor[lbl_idx] = 1
         return audio_encoding, label_tensor, lbl_idx, label, idx, pitch_shift
 
-    def precache_single(self):
+    def precache(self):
         items = [i for i in range(len(self))]
         do_pre_cache = False
         for i in items:
@@ -199,7 +199,7 @@ class GoogleSpeechCommandsDataset(Dataset):
                 for i in items:
                     self.__getitem__(i)
 
-    def precache(self):
+    def precache_multi(self):
         items = [i for i in range(len(self))]
         do_pre_cache = False
 
@@ -214,7 +214,6 @@ class GoogleSpeechCommandsDataset(Dataset):
                 break
 
         if do_pre_cache:
-
             with Pool(os.cpu_count()) as executor:
                 if self.logging:
                     print('Caching the dataset...')
