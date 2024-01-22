@@ -27,6 +27,7 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--configs', help='list of configurations to run', nargs='+', default=[])
     parser.add_argument('-p', '--path', help='Path to run configurations', default='./config')
     parser.add_argument('-r', '--repeats', help='Number of repeats per configuration', default=1)
+    parser.add_argument('-m', '--multicache', help='Use parallel processing when caching dataset', default=False)
     args = parser.parse_args()
 
     if len(args.configs) == 0:
@@ -40,6 +41,6 @@ if __name__ == '__main__':
         cfg = os.path.join(args.path, config_name + '.json')
         if os.path.isfile(cfg):
             for run_idx in range(args.repeats):
-                execute(cfg, root='./', run_name_index=run_idx+1)
+                execute(cfg, root='./', run_name_index=run_idx+1, multicache=args.multicache)
         else:
             warnings.warn(f'Path {cfg} does not exist. Skipping...')

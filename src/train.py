@@ -16,17 +16,23 @@ from src.resnet import ResNet
 from src.dataset import GoogleSpeechCommandsDataset
 from src.utils import get_device
 
-def init_train_data(directory, cache, encoding, augment, data_sample_limit, batch_size):
+def init_train_data(directory, cache, encoding, augment, data_sample_limit, batch_size, multicache=False):
     train_data = GoogleSpeechCommandsDataset(directory, cache, encoder=encoding, sample_limit=data_sample_limit,
                                              augment=augment, train=True)
-    train_data.precache()
+    if multicache:
+        train_data.precache_multi()
+    else:
+        train_data.precache()
     train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
     return train_data, train_loader
 
-def init_test_data(directory, cache, encoding, augment, data_sample_limit, batch_size):
+def init_test_data(directory, cache, encoding, augment, data_sample_limit, batch_size, multicache=False):
     test_data = GoogleSpeechCommandsDataset(directory, cache, encoder=encoding, sample_limit=data_sample_limit,
                                             augment=augment, train=False)
-    test_data.precache()
+    if multicache:
+        test_data.precache_multi()
+    else:
+        test_data.precache()
     test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
     return test_data, test_loader
 
@@ -334,7 +340,7 @@ def load_config(configuration, run_name_index=None):
             distill_teacher_path, distill_t, distill_soft_target_loss_weight, distill_ce_loss_weight, log_interval,
             log_project, log_name, log_comment, log_group, checkpoints, checkpoint_interval)
 
-def execute(config_directory: str, root='./', run_name_index=None):
+def execute(config_directory: str, root='./', run_name_index=None, multicache=False):
     torch.set_flush_denormal(True)      # Important: sets small tensor values to zero
     ct = datetime.now()
 
@@ -356,9 +362,9 @@ def execute(config_directory: str, root='./', run_name_index=None):
 
     # Dataset and DataLoader
     train_data, train_loader = init_train_data(data_train_dir, data_cache_dir, data_encoding,
-                                               data_augment, data_sample_limit, batch_size)
+                                               data_augment, data_sample_limit, batch_size, multicache)
     test_data, test_loader = init_train_data(data_test_dir, data_cache_dir, data_encoding,
-                                             data_augment, data_sample_limit, batch_size)
+                                             data_augment, data_sample_limit, batch_size, multicache)
 
     # Initialize model
     if use_checkpoint:
