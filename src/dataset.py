@@ -1,17 +1,19 @@
 import os
-import numpy as np
 import random
+from tqdm import tqdm
+import numpy as np
+import matplotlib.pyplot as plt
+import hashlib
+import librosa
+from concurrent.futures import ProcessPoolExecutor
+
 import torch
 import torchaudio
-from tqdm import tqdm
 from torch.utils.data import Dataset
-import matplotlib.pyplot as plt
 try:
     import sounddevice as sd
 except OSError as e:
     print('Sounddevice could not be imported!')
-import hashlib
-import librosa
 
 class GoogleSpeechCommandsDataset(Dataset):
     def __init__(self,
@@ -175,7 +177,7 @@ class GoogleSpeechCommandsDataset(Dataset):
         label_tensor[lbl_idx] = 1
         return audio_encoding, label_tensor, lbl_idx, label, idx, pitch_shift
 
-    def precache(self):
+    def precache_single(self):
         items = [i for i in range(len(self))]
         do_pre_cache = False
         for i in items:
@@ -196,6 +198,36 @@ class GoogleSpeechCommandsDataset(Dataset):
             else:
                 for i in items:
                     self.__getitem__(i)
+
+    def precache(self):
+        items = [i for i in range(len(self))]
+        do_pre_cache = False
+
+        # Check if any file needs caching
+        for i in items:
+            try:
+                _, cache_path, _, _ = self.file_paths[i]
+            except IndexError as e:
+                print(f'Error: index = {i}, len(file_paths) = {len(self.file_paths)}, len(self) = {len(self)}')
+                raise e
+            if not os.path.exists(cache_path):
+                do_pre_cache = True
+                break
+
+        def cache_item(i):
+            try:
+                self.__getitem__(i)
+            except Exception as e:
+                print(f"Error caching item {i}: {e}")
+
+        if do_pre_cache:
+            if self.logging:
+                print('Caching the dataset...')
+                with ProcessPoolExecutor() as executor:
+                    list(tqdm(executor.map(cache_item, items), total=len(items)))
+            else:
+                with ProcessPoolExecutor() as executor:
+                    executor.map(cache_item, items)
 
     def play(self, idx, blocking=True):
         waveform, sample_rate, pitch_shift, audio_path = self.load_audio(idx)
