@@ -203,7 +203,6 @@ class GoogleSpeechCommandsDataset(Dataset):
         items = [i for i in range(len(self))]
         do_pre_cache = False
 
-        # Check if there is a need for precaching
         for i in items:
             try:
                 _, cache_path, _, _ = self.file_paths[i]
@@ -215,15 +214,13 @@ class GoogleSpeechCommandsDataset(Dataset):
                 break
 
         if do_pre_cache:
-            def cache_item(i):
-                self.__getitem__(i)
 
             with Pool(os.cpu_count()) as executor:
                 if self.logging:
                     print('Caching the dataset...')
-                    list(tqdm(executor.imap(cache_item, items), total=len(items)))
+                    list(tqdm(executor.imap(self.__getitem__, items), total=len(items)))
                 else:
-                    executor.map(cache_item, items)
+                    executor.map(self.__getitem__, items)
 
     def play(self, idx, blocking=True):
         waveform, sample_rate, pitch_shift, audio_path = self.load_audio(idx)
