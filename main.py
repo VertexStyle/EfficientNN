@@ -39,7 +39,7 @@ if __name__ == '__main__':
     for config_name in runs:
         cfg = os.path.join(args.path, config_name + '.json')
         if os.path.isfile(cfg):
-            for run_idx in range(args.run_repeats):
+            for run_idx in range(args.repeats):
                 execute(cfg, root='./', run_name_index=run_idx+1)
         else:
             warnings.warn(f'Path {cfg} does not exist. Skipping...')
