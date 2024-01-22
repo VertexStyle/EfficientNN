@@ -27,7 +27,7 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--configs', help='list of configurations to run', nargs='+', default=[])
     parser.add_argument('-p', '--path', help='Path to run configurations', default='./config')
     parser.add_argument('-r', '--repeats', help='Number of repeats per configuration', default=1)
-    parser.add_argument('-m', '--multicache', help='Use parallel processing when caching dataset', default=False)
+    parser.add_argument('--multicache', action='store_true', help="Use parallel processing when caching dataset")
     args = parser.parse_args()
 
     if len(args.configs) == 0:
