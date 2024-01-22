@@ -8,9 +8,6 @@ import warnings
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import torchvision.transforms as transforms
-from torch import optim
 from torch.nn.utils import prune
 
 import snntorch as snn

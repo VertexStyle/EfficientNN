@@ -33,6 +33,8 @@ if __name__ == '__main__':
         runs = [cfg for cfg, act in configs.items() if act]
     else:
         runs = args.configs
+    print('Run configurations:', runs)
+    print()
 
     for config_name in runs:
         cfg = os.path.join(args.config_path, config_name + '.json')
