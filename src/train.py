@@ -407,7 +407,7 @@ def execute(config_directory: str, root='./', run_name_index=None):
 
     # Model memory
     if torch.cuda.is_available():
-        print(f'Model uses {torch.cuda.memory_allocated(device) / 1e-6} Mb on GPU')
+        print(f'Model uses {torch.cuda.memory_allocated(device) * 1e-6} Mb on GPU')
 
     # Init weights and biases
     wb.login()
