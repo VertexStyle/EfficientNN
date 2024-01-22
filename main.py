@@ -1,15 +1,15 @@
 import os
 import warnings
+import argparse
 
 from src.train import execute
 
 if __name__ == '__main__':
-    config_path = './config'
-
     configs = {
-        'baseline':                     False,
-        'pruning':                      True,
-        'pruning_decay':                True,
+        'baseline':                     True,
+        'baseline_decay':               True,
+        'pruning':                      False,
+        'pruning_decay':                False,
         'quantize':                     False,
         'distill':                      False,
         'spiking':                      False,
@@ -23,13 +23,21 @@ if __name__ == '__main__':
         'pruning_spiking_distill':      False,
     }
 
-    run_repeats = 1
+    parser = argparse.ArgumentParser(description='Run configurations')
+    parser.add_argument('-c', '--configs', help='list of configurations to run', nargs='+', default=[])
+    parser.add_argument('-p', '--path', help='Path to run configurations', default='./config')
+    parser.add_argument('-r', '--repeats', help='Number of repeats per configuration', default=1)
+    args = parser.parse_args()
 
-    for (config_name, active) in configs.items():
-        if active:
-            cfg = os.path.join(config_path, config_name + '.json')
-            if os.path.isfile(cfg):
-                for run_idx in range(run_repeats):
-                    execute(cfg, root='./', run_name_index=run_idx+1)
-            else:
-                warnings.warn(f'Path {cfg} does not exist. Skipping...')
+    if len(args.configs) == 0:
+        runs = [cfg for cfg, act in configs.items() if act]
+    else:
+        runs = args.configs
+
+    for config_name in runs:
+        cfg = os.path.join(args.config_path, config_name + '.json')
+        if os.path.isfile(cfg):
+            for run_idx in range(args.run_repeats):
+                execute(cfg, root='./', run_name_index=run_idx+1)
+        else:
+            warnings.warn(f'Path {cfg} does not exist. Skipping...')
