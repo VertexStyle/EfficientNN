@@ -6,7 +6,10 @@ import torchaudio
 from tqdm import tqdm
 from torch.utils.data import Dataset
 import matplotlib.pyplot as plt
-import sounddevice as sd
+try:
+    import sounddevice as sd
+except OSError as e:
+    print('Sounddevice could not be imported!')
 import hashlib
 import librosa
 
