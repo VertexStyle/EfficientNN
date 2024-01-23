@@ -60,7 +60,7 @@
    "logging": {
       "project":  "Efficient",
       "name":  "Pruning A",
-      "group":  "Pruning",
+      "group":  "Pruning A",
       "comment": "Training with iterative weight pruning",
       "log_interval": 10,
       "checkpoints": true,

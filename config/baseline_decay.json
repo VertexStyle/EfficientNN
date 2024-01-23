@@ -60,9 +60,9 @@
    },
    "logging": {
       "project":  "Efficient",
-      "name":  "Baseline",
-      "group":  "Baseline",
-      "comment": "Baseline training",
+      "name":  "Baseline B",
+      "group":  "Baseline B",
+      "comment": "Baseline training with weight decay",
       "log_interval": 10,
       "checkpoints": true,
       "checkpoint_interval": 10,

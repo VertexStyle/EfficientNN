@@ -276,21 +276,21 @@ def load_config(configuration, run_name_index=None):
     data_train_dir = configuration['data']['train_dir']
     data_test_dir = configuration['data']['test_dir']
     data_cache_dir = configuration['data']['cache_dir']
-    if not os.path.exists(data_train_dir):
+    if not os.path.exists(data_train_dir.replace('*', '')):
         ab = data_train_dir.split('*/')
         if len(ab) == 2:
             data_train_dir = os.path.join('./', ab[1])
-    if not os.path.exists(data_test_dir):
+    if not os.path.exists(data_test_dir.replace('*', '')):
         ab = data_test_dir.split('*/')
         if len(ab) == 2:
             data_test_dir = os.path.join('./', ab[1])
-    if not os.path.exists(data_cache_dir):
+    if not os.path.exists(data_cache_dir.replace('*', '')):
         ab = data_cache_dir.split('*/')
         if len(ab) == 2:
             data_cache_dir = os.path.join('./', ab[1])
-    data_train_dir.replace('*', '')
-    data_test_dir.replace('*', '')
-    data_cache_dir.replace('*', '')
+    data_train_dir = data_train_dir.replace('*', '')
+    data_test_dir = data_test_dir.replace('*', '')
+    data_cache_dir = data_cache_dir.replace('*', '')
 
     data_encoding = configuration['data']['encoding']
     data_augment = configuration['data']['augment']

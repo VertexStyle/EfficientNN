@@ -6,10 +6,10 @@ from src.train import execute
 
 if __name__ == '__main__':
     configs = {
-        'baseline':                     True,
-        'baseline_decay':               True,
-        'pruning':                      False,
-        'pruning_decay':                False,
+        'baseline':                     False,  # running
+        'baseline_decay':               False,  # 1x
+        'pruning':                      False,  # 1x
+        'pruning_decay':                False,   # running
         'quantize':                     False,
         'distill':                      False,
         'spiking':                      False,
