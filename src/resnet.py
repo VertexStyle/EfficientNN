@@ -519,12 +519,20 @@ class ResNet(nn.Module):
         return new_model
 
     def __deepcopy__(self, memodict: dict = None):
-        path = 'temp.p'
-        torch.save(self.state_dict(), path)
-        state_dict_copy = torch.load(path)
-        copy_obj = ResNet(**self.config)
-        copy_obj.load_state_dict(state_dict_copy)
-        os.remove(path)
+        copy_obj = self
+        trials = 0
+        while trials < 10:
+            try:
+                path = 'temp.p'
+                torch.save(self.state_dict(), path)
+                state_dict_copy = torch.load(path)
+                copy_obj = ResNet(**self.config)
+                copy_obj.load_state_dict(state_dict_copy)
+                os.remove(path)
+                break
+            except FileNotFoundError as e:
+                trials += 1
+                continue
         return copy_obj
 
 
