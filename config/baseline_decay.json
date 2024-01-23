@@ -24,7 +24,7 @@
    },
    "training": {
       "epochs": 60,
-      "learning_rate": 0.0001,
+      "learning_rate": 0.0005,
       "weight_decay": 0.0001,
       "batch_size": 64,
       "optimizer": "Adam"
@@ -62,7 +62,7 @@
       "project":  "Efficient",
       "name":  "Baseline B",
       "group":  "Baseline B",
-      "comment": "Baseline training with weight decay",
+      "comment": "Baseline training with weight decay (with LR = 0.005)",
       "log_interval": 10,
       "checkpoints": true,
       "checkpoint_interval": 10,
