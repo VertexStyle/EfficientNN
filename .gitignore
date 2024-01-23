@@ -1,3 +1,5 @@
 /runs
 /models
 /wandb
+
+!/models/resnet_ep55_acc99_sprs0.pt
