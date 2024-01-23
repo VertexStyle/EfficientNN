@@ -6,14 +6,14 @@ from src.train import execute
 
 if __name__ == '__main__':
     configs = {
-        'baseline':                     False,  # running
-        'baseline_decay':               False,  # 1x
-        'pruning':                      False,  # 1x
-        'pruning_decay':                False,   # running
-        'quantize':                     False,
+        'baseline':                     False,  # 1x (old)
+        'baseline_decay':               False,  # 1x (running, retraining with higher LR)
+        'pruning':                      False,  # 1x (repeat to verify)
+        'pruning_decay':                False,  # 1x (repeat to verify)
+        'quantize':                     True,   # 1x (running)
         'distill':                      False,
         'spiking':                      False,
-        'neglecting':                   False,
+        'neglecting':                   False,  # 1x (retrain if baseline improves)
         'pruning_quantize':             False,
         'pruning_spiking':              False,
         'pruning_distill':              False,

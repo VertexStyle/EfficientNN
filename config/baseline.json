@@ -20,7 +20,7 @@
    },
    "checkpoint": {
       "use_checkpoint": false,
-      "checkpoint_path": "./models/resnet_ep55_acc99_sprs0.pth"
+      "checkpoint_path": "./models/resnet_ep55_acc99_sprs0.pt"
    },
    "training": {
       "epochs": 60,
@@ -41,7 +41,7 @@
    },
    "distillation": {
       "distill": false,
-      "teacher_path": "./models/resnet_ep55_acc99_sprs0.pth",
+      "teacher_path": "./models/resnet_ep55_acc99_sprs0.pt",
       "t": 2,
       "soft_target_loss_weight": 0.25,
       "ce_loss_weight": 0.75

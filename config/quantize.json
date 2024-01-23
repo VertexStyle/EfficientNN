@@ -19,8 +19,8 @@
       "sample_limit": null
    },
    "checkpoint": {
-      "use_checkpoint": false,
-      "checkpoint_path": "/home/marcel/Source/Python/EfficientNN/models/resnet_ep55_acc99_sprs0.pth"
+      "use_checkpoint": true,
+      "checkpoint_path": "/home/marcel/Source/Python/EfficientNN/models/resnet_ep55_acc99_sprs0.pt"
    },
    "training": {
       "epochs": 60,
@@ -40,7 +40,7 @@
    },
    "distillation": {
       "distill": false,
-      "teacher_path": "/home/marcel/Source/Python/EfficientNN/models/resnet_ep55_acc99_sprs0.pth",
+      "teacher_path": "/home/marcel/Source/Python/EfficientNN/models/resnet_ep55_acc99_sprs0.pt",
       "t": 2,
       "soft_target_loss_weight": 0.25,
       "ce_loss_weight": 0.75
@@ -56,6 +56,7 @@
    "neglecting": {
       "neglect": false,
       "amount": 0.5,
+      "threshold": 1.0,
    },
    "logging": {
       "project":  "Efficient",
