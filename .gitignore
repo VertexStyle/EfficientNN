@@ -3,3 +3,4 @@ wandb
 models/*
 !models/resnet_ep55_acc99_sprs0.pt
 !models/resnet_ep55_acc94_sprs0.pt
+!models/resnnet_ep20_acc88_sprs0.pt
