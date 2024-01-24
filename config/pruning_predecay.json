@@ -20,7 +20,7 @@
    },
    "checkpoint": {
       "use_checkpoint": true,
-      "checkpoint_path": "./models/resnet_ep55_acc94_sprs_0.pt"
+      "checkpoint_path": "./models/resnet_ep55_acc94_sprs0.pt"
    },
    "training": {
       "epochs": 34,
