@@ -2,3 +2,4 @@ runs
 wandb
 models/*
 !models/resnet_ep55_acc99_sprs0.pt
+!models/resnet_ep55_acc94_sprs0.pt
