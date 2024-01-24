@@ -23,7 +23,7 @@
       "checkpoint_path": "./models/resnet_ep55_acc99_sprs0.pt"
    },
    "training": {
-      "epochs": 69,
+      "epochs": 34,
       "learning_rate": 0.0001,
       "weight_decay": 0.0,
       "batch_size": 64,
@@ -32,7 +32,7 @@
    "pruning": {
       "prune": true,
       "prune_amount": 0.44,
-      "prune_interval": 10
+      "prune_interval": 5
    },
    "quantization": {
       "quantize": false,
