@@ -438,7 +438,7 @@ def execute(config_directory: str, root='./', run_name_index=None, multicache=Fa
                   num_steps=spike_steps, neglect_threshold=neglect_thresh, device=device)
 
         # Prune in regular intervals
-        if prune and (epoch % prune_interval == 0 or (epoch-1 % prune_interval == 0 and use_checkpoint)) and epoch < epochs:
+        if prune and (epoch % prune_interval == 0) and epoch < epochs:
             model.prune(name='weight', amount=prune_amount)
 
         # Testing
