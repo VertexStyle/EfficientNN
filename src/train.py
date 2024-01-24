@@ -242,7 +242,7 @@ def save_checkpoint(model: ResNet, optimizer, epoch, loss=None, filename='checkp
     }
     torch.save(checkpoint, filename)
 
-def load_checkpoint(filepath, model=ResNet, optimizer=None, device='cpu'):
+def load_checkpoint(filepath, model=ResNet, optimizer=None, device='cpu', **kwargs):
     checkpoint = torch.load(filepath, map_location=device)
 
     mdl_state = checkpoint.get('model_state')
@@ -253,7 +253,7 @@ def load_checkpoint(filepath, model=ResNet, optimizer=None, device='cpu'):
     if isinstance(model, ResNet):
         model.load_state_dict(mdl_state).to(device)
     else:
-        model = ResNet.from_state_dict(mdl_state).to(device)
+        model = ResNet.from_state_dict(mdl_state, **kwargs).to(device)
 
     if opt_state is not None:
         if optimizer is None:
@@ -369,7 +369,7 @@ def execute(config_directory: str, root='./', run_name_index=None, multicache=Fa
     # Initialize model
     if use_checkpoint:
         # model = ResNet.from_state_dict(torch.load(checkpoint_path, map_location=device))
-        epoch, loss, model, optimizer = load_checkpoint(checkpoint_path, device=device)
+        epoch, loss, model, optimizer = load_checkpoint(checkpoint_path, device=device, spiking=do_spike)
     else:
         model = ResNet(tuple(train_data.size()), len(train_data.labels),
                        initial_channels=model_initial_channels, stage_channels=model_stage_channels,

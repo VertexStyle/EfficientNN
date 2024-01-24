@@ -7,18 +7,21 @@ from src.train import execute
 if __name__ == '__main__':
     configs = {
         'baseline':                     False,  # 1x (old)
-        'baseline_decay':               False,  # 1x (running, retraining with higher LR)
-        'pruning':                      False,  # 1x (repeat to verify)
-        'pruning_decay':                False,  # 1x (repeat to verify)
-        'quantize':                     True,   # 1x (running)
+        'baseline_decay':               False,  # 2x
+        'pruning':                      False,  # 1x (A)
+        'pruning_decay':                False,  # 2x (B)
+        'pruning_predecay':             False,  # 1x (2. running)
+        'neglecting':                   False,  # 1x
+        'quantize':                     False,  # 2x
+        'spike_pruning_predecay':       False,  # 0x (1. running)
+        'spike_distill':                True,   # 0x (1. running)
+
         'distill':                      False,
-        'spiking':                      False,
-        'neglecting':                   False,  # 1x (retrain if baseline improves)
+        'spike':                        False,
         'pruning_quantize':             False,
         'pruning_spiking':              False,
         'pruning_distill':              False,
         'quantize_distill':             False,
-        'spiking_distill':              False,
         'pruning_quantize_distill':     False,
         'pruning_spiking_distill':      False,
     }
