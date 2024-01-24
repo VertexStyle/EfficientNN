@@ -59,9 +59,9 @@
    },
    "logging": {
       "project":  "Efficient",
-      "name":  "Pruning A",
-      "group":  "Pruning A",
-      "comment": "Training with iterative weight pruning",
+      "name":  "Pruning C",
+      "group":  "Pruning C",
+      "comment": "Training with iterative weight pruning using a pre-trained model with decay",
       "log_interval": 10,
       "checkpoints": true,
       "checkpoint_interval": 10,
