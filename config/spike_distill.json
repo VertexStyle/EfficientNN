@@ -3,7 +3,7 @@
       "type":  "ResNet",
       "initial_channels": 64,
       "stage_channels": [64, 128, 256, 512],
-      "stage_stride": [1, 2, 2],
+      "stage_stride": [1, 2, 2, 2],
       "num_blocks_per_stage": 2,
       "padding": 1
    },
