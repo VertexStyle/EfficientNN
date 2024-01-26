@@ -340,7 +340,8 @@ def load_config(configuration, run_name_index=None):
             distill_teacher_path, distill_t, distill_soft_target_loss_weight, distill_ce_loss_weight, log_interval,
             log_project, log_name, log_comment, log_group, checkpoints, checkpoint_interval)
 
-def execute(config_directory: str, root='./', run_name_index=None, multicache=False):
+def execute(config_directory: str, root='./', run_name_index=None, multicache=False, resume=None, checkpoint=None,
+            init_epoch=1):
     torch.set_flush_denormal(True)      # Important: sets small tensor values to zero
     ct = datetime.now()
 
@@ -367,9 +368,11 @@ def execute(config_directory: str, root='./', run_name_index=None, multicache=Fa
                                              data_augment, data_sample_limit, batch_size, multicache)
 
     # Initialize model
-    if use_checkpoint:
+    if checkpoint is not None:
+        init_epoch, loss, model, optimizer = load_checkpoint(checkpoint, device=device)
+    elif use_checkpoint:
         # model = ResNet.from_state_dict(torch.load(checkpoint_path, map_location=device))
-        epoch, loss, model, optimizer = load_checkpoint(checkpoint_path, device=device, spiking=do_spike)
+        init_epoch, loss, model, optimizer = load_checkpoint(checkpoint_path, device=device, spiking=do_spike)
     else:
         model = ResNet(tuple(train_data.size()), len(train_data.labels),
                        initial_channels=model_initial_channels, stage_channels=model_stage_channels,
@@ -417,7 +420,11 @@ def execute(config_directory: str, root='./', run_name_index=None, multicache=Fa
 
     # Init weights and biases
     wb.login()
-    run = wb.init(dir=root, project=log_project, name=log_name, group=log_group, config=config, notes=log_comment)
+    resume_flag = None
+    if resume is not None:
+        resume_flag = 'must'
+    run = wb.init(dir=root, project=log_project, name=log_name, group=log_group, config=config, notes=log_comment,
+                  resume=resume_flag, id=resume)
     run.log_code()
 
     # Training loop
@@ -425,7 +432,7 @@ def execute(config_directory: str, root='./', run_name_index=None, multicache=Fa
     top_check = ''
     accuracy, sparsity, significance = test(model, test_loader, criterion, 0, cpu_tests=16, device=device)
     best_accuracy = 0.
-    for epoch in range(1, epochs+1):
+    for epoch in range(init_epoch, epochs+1):
         if do_distillation:
             # Knowledge Distillation
             distill(teacher_model, model, train_loader, optimizer, criterion,

@@ -237,7 +237,7 @@ class ResNet(nn.Module):
         com_out = torch.zeros(x.shape[0], self.out_classes, device=self.device)
         for c, (stage_name, stage) in enumerate(self.stages.items()):
             out = stage(out)
-            if self.neglect:
+            if c > 0 and self.neglect:
                 classifier = self.__getattr__(f'classifier{c+1}')
                 cls_out, stopped = classifier(out, stop_threshold=stop_threshold)
                 com_out += cls_out

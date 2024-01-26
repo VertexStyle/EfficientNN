@@ -42,8 +42,8 @@
       "distill": true,
       "teacher_path": "./models/resnet_ep55_acc99_sprs0.pt",
       "t": 2,
-      "soft_target_loss_weight": 0.25,
-      "ce_loss_weight": 0.75
+      "soft_target_loss_weight": 0.5,
+      "ce_loss_weight": 0.5
    },
    "spiking": {
       "spike": true,
