@@ -205,31 +205,33 @@ class ResNet(nn.Module):
                 self.__setattr__(f'classifier{c+1}', Classifier(1, out_classes, pool=pool))
                 self.init_flat_features(f'classifier{c+1}', in_shape, out_classes, module=Classifier,
                                         module_args={'pool': pool,
-                                                     'cost': (c*neglect)/len(stage_channels)})
+                                                     'cost': (c*neglect)/len(stage_channels)},)
         else:
             self.avg_pool = nn.AvgPool2d(4)
             self.linear = nn.Linear(1, out_classes)
             self.init_flat_features('linear', in_shape, out_classes)
 
-    def forward(self, x, num_steps=5, stop_threshold=1., stop_after=None):
+    def forward(self, x, num_steps=5, stop_threshold=1., stop_after=None, include_first_classifier=False):
         if self.spiking:
-            out = self._spike_forward(x, num_steps, stop_threshold, stop_after)
+            out = self._spike_forward(x, num_steps, stop_threshold=stop_threshold, stop_after=stop_after,
+                                      include_first_classifier=include_first_classifier)
         else:
-            out = self._forward(x, stop_threshold, stop_after)
+            out = self._forward(x, stop_threshold=stop_threshold, stop_after=stop_after,
+                                include_first_classifier=include_first_classifier)
         return out
 
-    def _spike_forward(self, x, num_steps=5, stop_threshold=1., stop_after=None):
+    def _spike_forward(self, x, num_steps=5, *args, **kwargs):
         self.spike_reset()
         spk_rec = []
         out = None
         for step in range(num_steps):
-            out = self._forward(x, stop_threshold, stop_after)
+            out = self._forward(x, *args, **kwargs)
             spk_rec.append(out)
         spk_rec = torch.stack(spk_rec, dim=2)
         out = torch.mean(spk_rec, dim=-1)
         return out
 
-    def _forward(self, x, stop_threshold=1., stop_after=None):
+    def _forward(self, x, stop_threshold=1., stop_after=None, include_first_classifier=False):
         out = self.quant(x)
         out = self.conv1(out)
         out = self.bn1(out)
@@ -237,7 +239,7 @@ class ResNet(nn.Module):
         com_out = torch.zeros(x.shape[0], self.out_classes, device=self.device)
         for c, (stage_name, stage) in enumerate(self.stages.items()):
             out = stage(out)
-            if c > 0 and self.neglect:
+            if (include_first_classifier or c > 0) and self.neglect:
                 classifier = self.__getattr__(f'classifier{c+1}')
                 cls_out, stopped = classifier(out, stop_threshold=stop_threshold)
                 com_out += cls_out
@@ -281,7 +283,7 @@ class ResNet(nn.Module):
             module_args = {}
         try:
             tmp = torch.rand(1, *in_shape)
-            self(tmp)
+            self(tmp, include_first_classifier=True)
         except RuntimeError as e:
             flat_size = int(re.search('\(\d+x(\d+) and .*\)', str(e)).groups()[0])
             self.__setattr__(attr, module(flat_size, out_size, **module_args))
