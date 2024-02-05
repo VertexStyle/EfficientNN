@@ -16,7 +16,7 @@ The speech commands are preprocessed into equally sized mel-spectrograms with ea
 ## Optimizations
 Several deep learning optimization techniques are implemented:
 - Weight pruning
-- Static quantization
+- Quantization
 - Knowledge distillation
 - Spiking Neural Networks
 - Conditional Computation
