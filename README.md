@@ -19,6 +19,7 @@ Several deep learning optimization techniques are implemented:
 - Static quantization
 - Knowledge distillation
 - Spiking Neural Networks
+- Conditional Computation
 
 Also, the implementation allows multiple techniques to be combined.
 
