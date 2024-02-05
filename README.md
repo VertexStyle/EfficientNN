@@ -1,4 +1,4 @@
-# DLOptimization
+# Efficient Speech Recognition: Model Compression, Spiking Neural Networks and Conditional Computation
 
 The aim of this project is to allow fast inference on edge devices (mobile devices, mobile robots, etc.).
 
