@@ -129,7 +129,7 @@ class ResNet(nn.Module):
         self.in_shape = in_shape
         self.out_classes = out_classes
         if stage_channels is None:
-            stage_channels = [1, 2, 2, 2]
+            stage_channels = [64, 128, 256, 512]
         self.config = {'in_shape': in_shape, 'out_classes': out_classes, 'initial_channels': initial_channels,
                        'stage_channels':stage_channels, 'num_blocks_per_stage': num_blocks_per_stage,
                        'initial_stride': initial_stride, 'stage_stride': stage_stride, 'padding': padding,
@@ -237,16 +237,18 @@ class ResNet(nn.Module):
         out = self.bn1(out)
         out = self.act1(out)
         com_out = torch.zeros(x.shape[0], self.out_classes, device=self.device)
+        c_count = 0
         for c, (stage_name, stage) in enumerate(self.stages.items()):
             out = stage(out)
             if (include_first_classifier or c > 0) and self.neglect:
                 classifier = self.__getattr__(f'classifier{c+1}')
                 cls_out, stopped = classifier(out, stop_threshold=stop_threshold)
                 com_out += cls_out
+                c_count += 1
                 if stop_after is not None:
                     stopped = stop_after == c+1
                 if not self.training and stopped:
-                    com_out /= c+1
+                    com_out /= c_count
                     break
         if self.training:
             com_out /= len(self.stages)
@@ -334,6 +336,7 @@ class ResNet(nn.Module):
         self.qconfig = torch.ao.quantization.get_default_qconfig('x86')
         fuse_model = self.fuse_model(inplace=inplace)
         if qat:
+            torch.set_flush_denormal(True)
             mdl = torch.ao.quantization.prepare_qat(fuse_model.train(), inplace=True)
             tmp_input = torch.randn(4, *self.in_shape).to(self.device)
             mdl(tmp_input)
@@ -561,7 +564,7 @@ class TestResNetModel(unittest.TestCase):
     def test_model_pruning(self):
         model = ResNet.from_state_dict(self.states)
 
-        model.prune('weight', amount=0.95)
+        model.prune(name='weight', amount=0.95)
         model.apply_pruning()
 
         st = time.perf_counter()

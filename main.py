@@ -35,7 +35,7 @@ if __name__ == '__main__':
     parser.add_argument('--multicache', action='store_true', help="Use parallel processing when caching dataset")
     parser.add_argument('-i', '--id', help='Resume ID for logging', default=resume_id)
     parser.add_argument('-s', '--checkpoint', help='Resume checkpoint', default=resume_check)
-    parser.add_argument('-e', '--epoch', help='Initial epoch to start from', default=1)
+    parser.add_argument('-e', '--epoch', help='Initial epoch to start from', type=int, default=1)
     args = parser.parse_args()
 
     if len(args.configs) == 0:

@@ -1,6 +1,9 @@
 runs
 wandb
+visual
 models/*
 !models/resnet_ep55_acc99_sprs0.pt
 !models/resnet_ep55_acc94_sprs0.pt
 !models/resnnet_ep20_acc88_sprs0.pt
+!models/resnnet_ep47_acc72_sprs68.pt
+!models/student_resnet_ep60_acc92_sprs0.pt

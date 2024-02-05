@@ -145,6 +145,7 @@ def test(model, test_loader, criterion, epoch=None,
         device_time = (time.perf_counter() - st) / (test_loader.batch_size * len(test_loader))
 
         if not model.quant_aware and cpu_tests > 0:
+            model.classifier_reset()
             print('-> Performance Testing on CPU')
             cpu_model = copy.deepcopy(model)
             cpu_model.to("cpu")
@@ -369,10 +370,14 @@ def execute(config_directory: str, root='./', run_name_index=None, multicache=Fa
 
     # Initialize model
     if checkpoint is not None:
-        init_epoch, loss, model, optimizer = load_checkpoint(checkpoint, device=device)
+        init_epoch_, loss, model, optimizer = load_checkpoint(checkpoint, device=device)
+        if 1 < init_epoch < init_epoch_:
+            init_epoch = init_epoch_
     elif use_checkpoint:
         # model = ResNet.from_state_dict(torch.load(checkpoint_path, map_location=device))
-        init_epoch, loss, model, optimizer = load_checkpoint(checkpoint_path, device=device, spiking=do_spike)
+        init_epoch_, loss, model, optimizer = load_checkpoint(checkpoint_path, device=device, spiking=do_spike)
+        if 1 < init_epoch < init_epoch_:
+            init_epoch = init_epoch_
     else:
         model = ResNet(tuple(train_data.size()), len(train_data.labels),
                        initial_channels=model_initial_channels, stage_channels=model_stage_channels,
@@ -380,6 +385,7 @@ def execute(config_directory: str, root='./', run_name_index=None, multicache=Fa
                        padding=model_padding, spiking=do_spike, beta=spike_beta,
                        surrogate_alpha=spike_surrogate_alpha, threshold=spike_threshold,
                        neglect=neglect if do_neglect else 0).to(device)
+
     if optim_type == 'Checkpoint':
         pass
     elif optim_type == 'Adam':
